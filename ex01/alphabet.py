@@ -35,7 +35,7 @@ def game_start(target_char, split_char):
     ans_num = int(input('\n\n欠損文字はいくつあるでしょうか? : '))
     if ans_num == num_of_missing_char:
         print('正解です． 具体的に欠損文字を1つずつ入力してください')
-        for i in range(1,num_of_missing_char):
+        for i in range(1,num_of_missing_char+1):
             char = input(f'{i}つ目の文字を入力してください : ')
             if char in split_char[1]:
                 split_char[1].remove(char)
