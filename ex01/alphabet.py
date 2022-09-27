@@ -35,10 +35,12 @@ def game_start(target_char, split_char):
     ans_num = int(input('\n\n欠損文字はいくつあるでしょうか? : '))
     if ans_num == num_of_missing_char:
         print('正解です． 具体的に欠損文字を1つずつ入力してください')
-        char1 = input('1つ目の文字を入力してください : ')
-        char2 = input('2つ目の文字を入力してください : ')
-        char3 = input('3つ目の文字を入力してください : ')
-        if char1 != char2 != char3 and char1 in split_char[1] and char2 in split_char[1] and char3 in split_char[1]:
+        for i in range(1,num_of_missing_char):
+            char = input(f'{i}つ目の文字を入力してください : ')
+            if char in split_char[1]:
+                split_char[1].remove(char)
+
+        if len(split_char[1]) == 0:
             return True
     return False
     
@@ -54,9 +56,9 @@ if __name__ == '__main__':
             print("正解です")
             break
         elif i != num_of_max_repeat -1:
-            print('不正解です．もう一度やり押してください')
+            print('不正解です  もう一度やり押してください')
         else:
-            print('不正解です． チャンスを使い切りました')
+            print('不正解です  チャンスを使い切りました')
         print('--------------------------------------------')
     ed = datetime.now()
     print(f'所要時間は{(ed-st).seconds}秒')
