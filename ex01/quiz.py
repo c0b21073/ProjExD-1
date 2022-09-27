@@ -1,4 +1,5 @@
-import random
+from random import randint
+from datetime import datetime
 
 
 questions = (('サザエさんの旦那の名前は？', ('マスオ','ますお')),
@@ -15,5 +16,8 @@ def shutudai(randint):
         print('間違い!')
 
 if __name__ == '__main__':
-    randint = random.randint(0,2)
+    randint = randint(0,2)
+    st = datetime.now()
     shutudai(randint)
+    ed = datetime.now()
+    print(f'所要時間は{(ed-st).seconds}秒')
