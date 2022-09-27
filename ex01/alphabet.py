@@ -1,4 +1,4 @@
-from platform import libc_ver
+from datetime import datetime
 from random import randint
 
 
@@ -45,6 +45,7 @@ def game_start(target_char, split_char):
 
 
 if __name__ == '__main__':
+    st = datetime.now()
     for i in range(num_of_max_repeat):
         list_ = make_chara()
         split_charactor = split_chara(list_.copy())
@@ -57,5 +58,7 @@ if __name__ == '__main__':
         else:
             print('不正解です． チャンスを使い切りました')
         print('--------------------------------------------')
+    ed = datetime.now()
+    print(f'所要時間は{(ed-st).seconds}秒')
 
     
