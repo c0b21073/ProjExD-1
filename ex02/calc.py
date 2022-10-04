@@ -68,13 +68,13 @@ def dotto_click(event):
             entry.insert(tk.END, txt[:-1])
 
 #キー入力を受付て，Enterキーでイコールとする．
-def print_key(event):
+def input_key(event):
     key = event.keysym
     if key == 'Return':
         equal_click(event)
 
 
-entry.bind('<Key>', print_key)
+entry.bind('<Key>', input_key)
 entry.focus_set()
 
 
