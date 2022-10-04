@@ -14,10 +14,17 @@ def num_click(event):
     txt = btn["text"]
     entry.insert(tk.END, txt)
 
+def plus_click(event):
+    entry.insert(tk.END, "+")
+
 for i in range(9, -1, -1):
     index = 9 - i #場所指定のためのindex
     button = tk.Button(root, text=str(i),width=4, height=2, font=('Times New Roman', 30))
     button.bind("<1>", num_click)
     button.grid(column=index%3, row=(index//3) + 1)
+
+plus_btn = tk.Button(root, text="+", width=4, height=2, font=('Times New Roman', 30))
+plus_btn.bind("<1>", plus_click)
+plus_btn.grid(column=1, row=4)
 
 root.mainloop()
