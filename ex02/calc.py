@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.messagebox as tkm
 from turtle import right
 
+OPERATORS = ('+', '-', '×', '÷')
+
 root = tk.Tk()
 root.title('clac')
 root.geometry('300x400')
@@ -9,19 +11,24 @@ root.geometry('300x400')
 entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right')
 entry.grid(column=0, row=0, columnspan=3)
 
+def check_not_ope(): #直前に演算子が入力されていないかのチェック
+    return entry.get()[-1:] not in OPERATORS
+
 def num_click(event):
     btn = event.widget
     txt = btn["text"]
     entry.insert(tk.END, txt)
 
 def plus_click(event):
-    entry.insert(tk.END, "+")
+    if check_not_ope():
+        entry.insert(tk.END, "+")
 
 def equal_click(event):
-    formula = entry.get()
-    ans = eval(formula)
-    entry.delete(0,tk.END)
-    entry.insert(tk.END, str(ans))
+    if check_not_ope():
+        formula = entry.get()
+        ans = eval(formula)
+        entry.delete(0,tk.END)
+        entry.insert(tk.END, str(ans))
 
 for i in range(9, -1, -1):
     index = 9 - i #場所指定のためのindex
