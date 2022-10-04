@@ -6,13 +6,13 @@ root = tk.Tk()
 root.title('clac')
 root.geometry('300x400')
 
+entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right')
+entry.grid(column=0, row=0, columnspan=3)
+
 def num_click(event):
     btn = event.widget
     txt = btn["text"]
-    tkm.showinfo(txt, f'{txt}のボタンがクリックされました')
-
-entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right')
-entry.grid(column=0, row=0, columnspan=3)
+    entry.insert(tk.END, txt)
 
 for i in range(9, -1, -1):
     index = 9 - i #場所指定のためのindex
