@@ -17,6 +17,12 @@ def num_click(event):
 def plus_click(event):
     entry.insert(tk.END, "+")
 
+def equal_click(event):
+    formula = entry.get()
+    ans = eval(formula)
+    entry.delete(0,tk.END)
+    entry.insert(tk.END, str(ans))
+
 for i in range(9, -1, -1):
     index = 9 - i #場所指定のためのindex
     button = tk.Button(root, text=str(i),width=4, height=2, font=('Times New Roman', 30))
@@ -26,5 +32,10 @@ for i in range(9, -1, -1):
 plus_btn = tk.Button(root, text="+", width=4, height=2, font=('Times New Roman', 30))
 plus_btn.bind("<1>", plus_click)
 plus_btn.grid(column=1, row=4)
+
+equal_btn =  tk.Button(root, text="=", width=4, height=2, font=('Times New Roman', 30))
+equal_btn.bind("<1>", equal_click)
+equal_btn.grid(column=2, row=4)
+
 
 root.mainloop()
