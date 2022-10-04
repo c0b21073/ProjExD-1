@@ -1,15 +1,33 @@
+import time
 import tkinter as tk
-import tkinter.messagebox as tkm
-from turtle import right
+
 
 OPERATORS = ('÷', '×', '-', '+')
+UES_SYMBOL = OPERATORS + ('.', '/', '//', '*', '**', '%')
+
+def check_input(s,p):
+    if int(p) != 1:
+        print(p)
+        return True
+    return (s.isdigit() or s in UES_SYMBOL)
 
 root = tk.Tk()
 root.title('clac')
 root.geometry('400x400')
 
-entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right')
+check = root.register(check_input)
+
+entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right', validate='key', validatecommand=(check, '%S', '%d'))
 entry.grid(column=0, row=0, columnspan=3)
+
+def print_key(event):
+    key = event.keysym
+    if not (key.isdigit() or key in UES_SYMBOL):
+        pass
+
+
+entry.bind('<Key>', print_key)
+entry.focus_set()
 
 def check_not_ope(): #直前に演算子が入力されていないかのチェック
     formula = entry.get()
