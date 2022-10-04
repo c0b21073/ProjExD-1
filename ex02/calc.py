@@ -12,7 +12,11 @@ entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right')
 entry.grid(column=0, row=0, columnspan=3)
 
 def check_not_ope(): #直前に演算子が入力されていないかのチェック
-    return entry.get()[-1:] not in OPERATORS
+    formula = entry.get()
+    if formula:
+        return entry.get()[-1:] not in OPERATORS
+    return False
+
 
 def num_click(event):
     btn = event.widget
