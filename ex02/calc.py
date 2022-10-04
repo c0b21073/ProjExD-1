@@ -13,7 +13,7 @@ def is_num(s):#入力が数値に変換できるかどうかの関数
     else:
         return True
 
-
+#入力を受け付ける文字の判定
 def check_input(s,p):
     if int(p) != 1:
         return True
@@ -24,7 +24,7 @@ root.title('clac')
 root.geometry('400x400')
 
 check = root.register(check_input)
-#entryに入力制限を設けて文字列などの
+#entryに入力制限を設けて文字列などの不適切な文字列は入力できないように
 entry = tk.Entry(width=10, font=("Times New Roman",40),justify='right', validate='key', validatecommand=(check, '%S', '%d'))
 entry.grid(column=0, row=0, columnspan=3)
 
@@ -57,7 +57,7 @@ def equal_click(event):
 
 def delete_click(event):
     entry.delete(0,tk.END)
-
+#すでに．が入力されていたら.を削除
 def dotto_click(event):
     if check_not_ope():
         txt = entry.get()
@@ -97,7 +97,7 @@ delete_btn = tk.Button(root, text="c", width=4, height=2, font=('Times New Roman
 delete_btn.bind("<1>", delete_click)
 delete_btn.grid(column=3, row=0)
 
-dotto_btn = tk.Button(root, text=".", width=4, height=2, font=('Times New Roman', 30)) # クリアボタン
+dotto_btn = tk.Button(root, text=".", width=4, height=2, font=('Times New Roman', 30)) # ．ボタン
 dotto_btn.bind("<1>", dotto_click)
 dotto_btn.grid(column=1, row=4)
 
