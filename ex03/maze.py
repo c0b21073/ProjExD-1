@@ -10,19 +10,25 @@ def key_up(event):
     key = ""
 
 def main_proc():
-    global cx, cy
+    global mx, my
     if key == "Up":
-        cy -= 20
+        my -= 1
     elif key == "Down":
-        cy += 20
+        my += 1
     elif key == "Left":
-        cx -= 20
+        mx -= 1
     elif key == "Right":
-        cx += 20
+        mx += 1
+    clac_c()
     canvas.coords('tori', cx, cy)
     root.after(100, main_proc)
 
-    
+#mx,myからcx,cyを計算する
+def clac_c():
+    global cx, cy
+    cx = 100*(mx-1) + 50
+    cy = 100*(my-1) + 50
+
     
 
 root = tk.Tk()
@@ -36,7 +42,8 @@ maze = make_maze(15,9)
 show_maze(canvas, maze)
 
 tori = tk.PhotoImage(file='ex03/fig/5.png')
-cx,cy = 300, 400
+mx, my = 1, 1
+clac_c()
 canvas.create_image(cx, cy, image=tori, tag='tori')
 
 key = ""
