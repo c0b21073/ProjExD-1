@@ -4,9 +4,25 @@ def key_down(event):
     global key
     key = event.keysym
 
-def key_up():
+def key_up(event):
     global key
     key = ""
+
+def main_proc():
+    global cx, cy
+    if key == "Up":
+        cy -= 20
+    elif key == "Down":
+        cy += 20
+    elif key == "Left":
+        cx -= 20
+    elif key == "Right":
+        cx += 20
+    canvas.coords('tori', cx, cy)
+    root.after(100, main_proc)
+
+    
+    
 
 root = tk.Tk()
 root.title("迷えるこうかとん")
@@ -21,5 +37,9 @@ canvas.create_image(cx, cy, image=tori, tag='tori')
 key = ""
 
 root.bind("<KeyPress>", key_down)
+root.bind("<KeyRelease>", key_up)
+
+main_proc()
+
 
 root.mainloop()
