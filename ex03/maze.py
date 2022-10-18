@@ -1,4 +1,3 @@
-from cgitb import reset
 import tkinter as tk
 from maze_maker import *
 
