@@ -4,6 +4,8 @@ from maze_maker import *
 def key_down(event):
     global key
     key = event.keysym
+    if key == "space":
+        fly()
 
 def key_up(event):
     global key
@@ -29,7 +31,20 @@ def clac_c():
     cx = 100*(mx-1) + 50
     cy = 100*(my-1) + 50
 
-    
+def can_move():
+    if is_flying:
+        return True
+
+def fly():
+    global is_flying
+    canvas.delete('tori')
+    if is_flying:
+        is_flying = False
+        canvas.create_image(cx, cy, image=tori, tag='tori')
+    else:
+        is_flying = True
+        canvas.create_image(cx, cy, image=flying_tori, tag='tori')
+
 
 root = tk.Tk()
 root.title("迷えるこうかとん")
@@ -41,12 +56,15 @@ canvas.pack()
 maze = make_maze(15,9)
 show_maze(canvas, maze)
 
+flying_tori = tk.PhotoImage(file='ex03/fig/3.png')
 tori = tk.PhotoImage(file='ex03/fig/5.png')
-mx, my = 1, 1
+mx, my = 2, 2
 clac_c()
 canvas.create_image(cx, cy, image=tori, tag='tori')
 
+
 key = ""
+is_flying = False
 
 root.bind("<KeyPress>", key_down)
 root.bind("<KeyRelease>", key_up)
