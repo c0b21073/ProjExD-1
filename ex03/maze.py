@@ -13,6 +13,7 @@ def key_up(event):
 
 def main_proc():
     global mx, my
+
     if key == "Up":
         my -= 1
     elif key == "Down":
@@ -21,6 +22,7 @@ def main_proc():
         mx -= 1
     elif key == "Right":
         mx += 1
+    can_move()
     clac_c()
     canvas.coords('tori', cx, cy)
     root.after(100, main_proc)
@@ -28,12 +30,21 @@ def main_proc():
 #mx,myからcx,cyを計算する
 def clac_c():
     global cx, cy
-    cx = 100*(mx-1) + 50
-    cy = 100*(my-1) + 50
+    cx = 100*mx + 50
+    cy = 100*my + 50
 
 def can_move():
-    if is_flying:
-        return True
+    global mx,my
+    if maze[my][mx] == 1 and not is_flying:
+        if key == "Up":
+            my += 1
+        elif key == "Down":
+            my -= 1
+        elif key == "Left":
+            mx += 1
+        elif key == "Right":
+            mx -= 1
+
 
 def fly():
     global is_flying
@@ -58,7 +69,7 @@ show_maze(canvas, maze)
 
 flying_tori = tk.PhotoImage(file='ex03/fig/3.png')
 tori = tk.PhotoImage(file='ex03/fig/5.png')
-mx, my = 2, 2
+mx, my = 1, 1
 clac_c()
 canvas.create_image(cx, cy, image=tori, tag='tori')
 
