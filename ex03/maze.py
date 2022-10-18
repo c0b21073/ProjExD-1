@@ -1,5 +1,13 @@
 import tkinter as tk
 
+def key_down(event):
+    global key
+    key = event.keysym
+
+def key_up():
+    global key
+    key = ""
+
 root = tk.Tk()
 root.title("迷えるこうかとん")
 
@@ -11,5 +19,7 @@ cx,cy = 300, 400
 canvas.create_image(cx, cy, image=tori, tag='tori')
 
 key = ""
+
+root.bind("<KeyPress>", key_down)
 
 root.mainloop()
