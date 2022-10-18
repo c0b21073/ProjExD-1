@@ -48,7 +48,7 @@ def can_move():
         elif key == "Right":
             mx -= 1
 
-
+#飛んでる状態と画像を切り替え
 def fly():
     global is_flying
     canvas.delete('tori')
@@ -76,6 +76,7 @@ def make_goal():
     end_list.sort(key=lambda x: x[0]+x[1])
     return end_list[-1]
             
+#ゴールしたかどうかの判定
 def is_goal():
     global can_mo
     if goal == (my, mx):
@@ -84,7 +85,7 @@ def is_goal():
         canvas.create_image(cx, cy, image=goal_tori, tag='tori')
         label = tk.Label(root, text='GOAL',font=('', 100))
         label.pack()
-            
+# todo
 def reset():
     pass
 
