@@ -89,10 +89,6 @@ def reset():
     pass
 
 
-key = ""
-is_flying = False
-can_mo = True
-
 
 root = tk.Tk()
 root.title("迷えるこうかとん")
