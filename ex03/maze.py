@@ -1,3 +1,4 @@
+from cgitb import reset
 import tkinter as tk
 from maze_maker import *
 
@@ -6,6 +7,8 @@ def key_down(event):
     key = event.keysym
     if key == "space":
         fly()
+    if key == 'r':
+        reset()
 
 def key_up(event):
     global key
@@ -25,15 +28,17 @@ def main_proc():
     can_move()
     cx,cy = clac_c(mx, my)
     canvas.coords('tori', cx, cy)
+    is_goal()
     root.after(100, main_proc)
 
 #mx,myからcx,cyを計算する
 def clac_c(x,y):
     return 100*x + 50, 100*y + 50
 
+#動けなかったらmx,myを戻す
 def can_move():
     global mx,my
-    if not(is_flying or maze[my][mx] == 0):
+    if (not(is_flying or maze[my][mx] == 0)) or not can_mo:
         if key == "Up":
             my += 1
         elif key == "Down":
@@ -71,8 +76,23 @@ def make_goal():
     end_list.sort(key=lambda x: x[0]+x[1])
     return end_list[-1]
             
-
+def is_goal():
+    global can_mo
+    if goal == (my, mx):
+        can_mo = False
+        canvas.delete('tori')
+        canvas.create_image(cx, cy, image=goal_tori, tag='tori')
+        label = tk.Label(root, text='GOAL',font=('', 100))
+        label.pack()
             
+def reset():
+    pass
+
+
+key = ""
+is_flying = False
+can_mo = True
+
 
 root = tk.Tk()
 root.title("迷えるこうかとん")
@@ -92,6 +112,7 @@ canvas.create_rectangle(goal_m[1]-50, goal_m[0]-50,goal_m[1]+50, goal_m[0]+50, f
 
 flying_tori = tk.PhotoImage(file='ex03/fig/3.png')
 tori = tk.PhotoImage(file='ex03/fig/5.png')
+goal_tori = tk.PhotoImage(file='ex03/fig/6.png')
 mx, my = 1, 1
 cx, cy = clac_c(mx,my)
 canvas.create_image(cx, cy, image=tori, tag='tori')
@@ -99,12 +120,11 @@ canvas.create_image(cx, cy, image=tori, tag='tori')
 
 key = ""
 is_flying = False
+can_mo = True
 
 root.bind("<KeyPress>", key_down)
 root.bind("<KeyRelease>", key_up)
 
 main_proc()
-
-
 
 root.mainloop()
