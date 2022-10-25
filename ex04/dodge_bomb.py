@@ -1,7 +1,9 @@
+from cgitb import reset
 import pygame as pg
 import sys
 from random import randint
 
+#画像配置
 def make_img(path, x, y, r=0, m=1.0):
     sfc = pg.image.load(path)
     sfc = pg.transform.rotozoom(sfc, r, m)
@@ -9,11 +11,44 @@ def make_img(path, x, y, r=0, m=1.0):
     rct.center = x, y
     return sfc, rct
 
-def make_bomb():
+#爆弾生成
+def make_bomb(tori_rct):
     sfc = pg.Surface((20,20))
     pg.draw.circle(sfc,(255,0,0),(10,10), 10)
     sfc.set_colorkey('black')
-    return sfc
+    rct = sfc.get_rect()
+    #爆弾生成時にこうかとんとかぶって生成されないように調整
+    while True:
+        bomb_x, bomb_y = randint(10,1590), randint(10, 890)
+        rct.center = bomb_x,bomb_y
+        if not rct.colliderect(tori_rct):
+            break
+    return sfc, rct
+
+#ゲームオーバー処理
+def game_over(sfc, clock):
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.KEYDOWN and event.key == pg.K_r:
+                return
+        #ゲームオーバーの文字表示
+        afonto = pg.font.Font(None, 80)
+        atxt = afonto.render("GAME OVER", True, (0,0,0))
+        arct = atxt.get_rect()
+        arct.center = 800, 450
+        sfc.blit(atxt, arct)
+        bfonto = pg.font.Font(None, 50)
+        btxt = bfonto.render("press 'R' to restart", True, (0,0,0))
+        brct = btxt.get_rect()
+        brct.center = 800, 550
+        sfc.blit(btxt, brct)
+
+        pg.display.update()
+        clock.tick(1000)
+        
 
 
 def main():
@@ -22,11 +57,8 @@ def main():
     back_sfc = pg.image.load('mt/pg_bg.jpeg')
     clock = pg.time.Clock()
     tori_sfc, tori_rct = make_img("mt/fig/6.png", 900,400, m=2.0)
-    bomb_x, bomb_y = randint(10,1590), randint(10, 890)
     vx, vy = 1, 1
-    bomb_sfc = make_bomb()
-    bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.center = bomb_x,bomb_y
+    bomb_sfc, bomb_rct = make_bomb(tori_rct)
 
 
     while True:
@@ -62,7 +94,10 @@ def main():
         
         pg.display.update()
         if tori_rct.colliderect(bomb_rct):
-            return
+            game_over(scrn_sfc,clock)
+            vx, vy = 1, 1
+            bomb_sfc, bomb_rct = make_bomb(tori_rct)
+            
         clock.tick(1000)
 
 if __name__ == "__main__":
