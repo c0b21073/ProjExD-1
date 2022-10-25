@@ -1,4 +1,3 @@
-from cgitb import reset
 from secrets import choice
 import pygame as pg
 import sys
