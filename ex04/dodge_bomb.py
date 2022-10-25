@@ -89,6 +89,7 @@ def main():
     
     previaus_score = 0
 
+    #りんごの設定
     app_sfc, app_rct = make_img("mt/fruit_apple.png", 300,300, m=0.2)
     app_half = app_rct.width//2
     app_num = 0
@@ -99,10 +100,10 @@ def main():
     #メインループ
     while True:
         scrn_sfc.blit(back_sfc, (0,0))
-
+        #りんご生成
         app_rct = make_apple(scrn_sfc, app_sfc, app_rct, app_half)
         
-        #りんご判定
+        #りんご取得判定
         if tori_rct.colliderect(app_rct):
             app_num += 1 
             app_flag = True
@@ -111,7 +112,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
-
+        #移動
         key_list = pg.key.get_pressed()
         if key_list[pg.K_UP]: 
             if 0 < tori_rct.top: 
@@ -162,6 +163,7 @@ def main():
                 previaus_score = 0
                 app_flag = True
                 app_num = 0
+                tori_speed = 1
 
         clock.tick(1000)
 
