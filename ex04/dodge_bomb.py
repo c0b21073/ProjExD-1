@@ -50,8 +50,8 @@ def game_over(sfc, clock):
         pg.display.update()
         clock.tick(1000)
         
+#スコア計算＆表示
 def show_score(sfc):
-    
     time = pg.time.get_ticks() - previaus_time
     fonto = pg.font.Font(None, 50)
     score = int(time//100)
@@ -67,13 +67,16 @@ def main():
     tori_sfc, tori_rct = make_img("mt/fig/6.png", 900,400, m=2.0)
     bomb_v = []
     bomb_list = []
+    #爆弾の個数
     bomb_num = 5
+    #爆弾を複数個生成
     for i in range(bomb_num):
         bomb_list.append(make_bomb(tori_rct))
         bomb_v.append([choice([-1,1]),choice([-1,1])])
     
     previaus_score = 0
 
+    #メインループ
     while True:
         scrn_sfc.blit(back_sfc, (0,0))
 
@@ -97,6 +100,7 @@ def main():
 
         scrn_sfc.blit(tori_sfc, tori_rct)
         
+        #全爆弾を動かす
         for i, v in zip(bomb_list, bomb_v):
             scrn_sfc.blit(i[0], i[1])
             if not 10 <= i[1].centerx <= 1590:
@@ -105,7 +109,7 @@ def main():
                 v[1] *= -1
             i[1] = i[1].move(v[0],v[1])
 
-        
+        #時間が経つと2倍に
         score = show_score(scrn_sfc)
         if score - previaus_score > 100:
             for n in bomb_v:
@@ -114,8 +118,10 @@ def main():
             previaus_score = score
 
         pg.display.update()
+        #全爆弾のゲームオーバー判定
         for j in bomb_list:
             if tori_rct.colliderect(j[1]):
+                #ゲームオーバー処理
                 game_over(scrn_sfc,clock)
                 bomb_v = []
                 bomb_list = []
