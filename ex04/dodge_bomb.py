@@ -1,7 +1,7 @@
-from secrets import choice
 import pygame as pg
 import sys
 from random import randint
+from random import choice
 
 #画像配置
 def make_img(path, x, y, r=0, m=1.0):
