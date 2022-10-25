@@ -1,4 +1,5 @@
 from cgitb import reset
+from secrets import choice
 import pygame as pg
 import sys
 from random import randint
@@ -23,7 +24,7 @@ def make_bomb(tori_rct):
         rct.center = bomb_x,bomb_y
         if not rct.colliderect(tori_rct):
             break
-    return sfc, rct
+    return [sfc, rct]
 
 #ゲームオーバー処理
 def game_over(sfc, clock):
@@ -49,7 +50,14 @@ def game_over(sfc, clock):
         pg.display.update()
         clock.tick(1000)
         
-
+def show_score(sfc):
+    
+    time = pg.time.get_ticks() - previaus_time
+    fonto = pg.font.Font(None, 50)
+    score = int(time//100)
+    txt = fonto.render(f'score : {(score)}', True, (0,0,0))
+    sfc.blit(txt, (0,0))
+    return score
 
 def main():
     pg.display.set_caption("逃げろ!こうかとん")
@@ -57,9 +65,14 @@ def main():
     back_sfc = pg.image.load('mt/pg_bg.jpeg')
     clock = pg.time.Clock()
     tori_sfc, tori_rct = make_img("mt/fig/6.png", 900,400, m=2.0)
-    vx, vy = 1, 1
-    bomb_sfc, bomb_rct = make_bomb(tori_rct)
-
+    bomb_v = []
+    bomb_list = []
+    bomb_num = 5
+    for i in range(bomb_num):
+        bomb_list.append(make_bomb(tori_rct))
+        bomb_v.append([choice([-1,1]),choice([-1,1])])
+    
+    previaus_score = 0
 
     while True:
         scrn_sfc.blit(back_sfc, (0,0))
@@ -84,23 +97,39 @@ def main():
 
         scrn_sfc.blit(tori_sfc, tori_rct)
         
-        scrn_sfc.blit(bomb_sfc, bomb_rct)
-        if not 10 <= bomb_rct.centerx <= 1590:
-            vx *= -1
-        if not 10 <= bomb_rct.centery <= 890:
-            vy *= -1
-        bomb_rct = bomb_rct.move(vx,vy)
+        for i, v in zip(bomb_list, bomb_v):
+            scrn_sfc.blit(i[0], i[1])
+            if not 10 <= i[1].centerx <= 1590:
+                v[0] *= -1
+            if not 10 <= i[1].centery <= 890:
+                v[1] *= -1
+            i[1] = i[1].move(v[0],v[1])
 
         
+        score = show_score(scrn_sfc)
+        if score - previaus_score > 100:
+            for n in bomb_v:
+                n[0] *= 2
+                n[1] *= 2
+            previaus_score = score
+
         pg.display.update()
-        if tori_rct.colliderect(bomb_rct):
-            game_over(scrn_sfc,clock)
-            vx, vy = 1, 1
-            bomb_sfc, bomb_rct = make_bomb(tori_rct)
-            
+        for j in bomb_list:
+            if tori_rct.colliderect(j[1]):
+                game_over(scrn_sfc,clock)
+                bomb_v = []
+                bomb_list = []
+                for i in range(bomb_num):
+                    bomb_list.append(make_bomb(tori_rct))
+                    bomb_v.append([choice([-1,1]),choice([-1,1])])
+                global previaus_time
+                previaus_time = pg.time.get_ticks()
+                previaus_score = 0
+
         clock.tick(1000)
 
 if __name__ == "__main__":
+    previaus_time = 0.0
     pg.init()
     main()
     pg.quit()
