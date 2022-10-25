@@ -24,6 +24,9 @@ def main():
     tori_sfc, tori_rct = make_img("mt/fig/6.png", 900,400, m=2.0)
     bomb_x, bomb_y = randint(10,1590), randint(10, 890)
     vx, vy = 1, 1
+    bomb_sfc = make_bomb()
+    bomb_rct = bomb_sfc.get_rect()
+    bomb_rct.center = bomb_x,bomb_y
 
 
     while True:
@@ -48,15 +51,18 @@ def main():
                 tori_rct.centerx -= 1
 
         scrn_sfc.blit(tori_sfc, tori_rct)
-        scrn_sfc.blit(make_bomb(), (bomb_x,bomb_y))
-        if not 10 <= bomb_x <= 1590:
+        
+        scrn_sfc.blit(bomb_sfc, bomb_rct)
+        if not 10 <= bomb_rct.centerx <= 1590:
             vx *= -1
-        bomb_x += vx
-        if not 10 <= bomb_y <= 890:
+        if not 10 <= bomb_rct.centery <= 890:
             vy *= -1
-        bomb_y += vy
+        bomb_rct = bomb_rct.move(vx,vy)
 
+        
         pg.display.update()
+        if tori_rct.colliderect(bomb_rct):
+            return
         clock.tick(1000)
 
 if __name__ == "__main__":
