@@ -51,15 +51,28 @@ def game_over(sfc, clock):
         clock.tick(1000)
         
 #スコア計算＆表示
-def show_score(sfc):
+def show_score(sfc, num):
     time = pg.time.get_ticks() - previaus_time
     fonto = pg.font.Font(None, 50)
     score = int(time//100)
-    txt = fonto.render(f'score : {(score)}', True, (0,0,0))
+    txt = fonto.render(f'score : {score+(num*50)}', True, (0,0,0))
     sfc.blit(txt, (0,0))
     return score
 
+#りんご作成
+def make_apple(main_sfc, sfc, rct, half):
+    global app_flag, app_x, app_y
+    if app_flag:
+        app_x, app_y = randint(0+half, 1600-half), randint(0+half, 900-half)
+        app_flag = False
+        rct.center = app_x, app_y
+    main_sfc.blit(sfc, rct)
+    return rct
+
+
+
 def main():
+    global app_flag
     pg.display.set_caption("逃げろ!こうかとん")
     scrn_sfc = pg.display.set_mode((1600,900))
     back_sfc = pg.image.load('mt/pg_bg.jpeg')
@@ -76,9 +89,24 @@ def main():
     
     previaus_score = 0
 
+    app_sfc, app_rct = make_img("mt/fruit_apple.png", 300,300, m=0.2)
+    app_half = app_rct.width//2
+    app_num = 0
+
+    tori_speed = 1
+    
+
     #メインループ
     while True:
         scrn_sfc.blit(back_sfc, (0,0))
+
+        app_rct = make_apple(scrn_sfc, app_sfc, app_rct, app_half)
+        
+        #りんご判定
+        if tori_rct.colliderect(app_rct):
+            app_num += 1 
+            app_flag = True
+
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -87,16 +115,16 @@ def main():
         key_list = pg.key.get_pressed()
         if key_list[pg.K_UP]: 
             if 0 < tori_rct.top: 
-                tori_rct.centery -= 1
+                tori_rct.centery -= tori_speed
         if key_list[pg.K_DOWN]: 
             if tori_rct.bottom < 900:
-                tori_rct.centery += 1
+                tori_rct.centery += tori_speed
         if key_list[pg.K_RIGHT]: 
             if tori_rct.right < 1600:
-                tori_rct.centerx += 1
+                tori_rct.centerx += tori_speed
         if key_list[pg.K_LEFT]: 
             if 0 < tori_rct.left:
-                tori_rct.centerx -= 1
+                tori_rct.centerx -= tori_speed
 
         scrn_sfc.blit(tori_sfc, tori_rct)
         
@@ -110,13 +138,14 @@ def main():
             i[1] = i[1].move(v[0],v[1])
 
         #時間が経つと2倍に
-        score = show_score(scrn_sfc)
+        score = show_score(scrn_sfc, app_num)
         if score - previaus_score > 100:
             for n in bomb_v:
                 n[0] *= 2
                 n[1] *= 2
+            tori_speed *= 2
             previaus_score = score
-
+       
         pg.display.update()
         #全爆弾のゲームオーバー判定
         for j in bomb_list:
@@ -131,11 +160,15 @@ def main():
                 global previaus_time
                 previaus_time = pg.time.get_ticks()
                 previaus_score = 0
+                app_flag = True
+                app_num = 0
 
         clock.tick(1000)
 
 if __name__ == "__main__":
     previaus_time = 0.0
+    app_flag = True
+    app_x, app_y = 0,0
     pg.init()
     main()
     pg.quit()
