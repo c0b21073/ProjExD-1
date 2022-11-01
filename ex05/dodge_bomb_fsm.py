@@ -9,6 +9,29 @@ key_delta = {
     pg.K_RIGHT: [+1, 0],
 }
 
+class Screen:
+    def __init__(self, title, wh, bg_img):
+        pg.display.set_caption(title)
+        self.sfc = pg.display.set_mode(wh)
+        self.rct = self.sfc.get_rect()
+        self.bg_sfc = pg.image.load(bg_img)
+        self.bg_rct = self.bg_sfc.get_rect()
+
+    def blit(self, sfc, rct):
+        self.sfc.blit(sfc, rct)
+
+class Bird:
+    key_delta = {
+        pg.K_UP: [0, -1],
+        pg.K_DOWN: [0, +1],
+        pg.K_LEFT: [-1, 0],
+        pg.K_RIGHT: [+1, 0],
+    }
+    def __init__(self, file_name, x, xy):#"mt/fig/6.png"
+        self.sfc = pg.image.load(file_name)
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, x)
+        self.rct = self.sfc.get_rect()
+        self.rct.center = xy
 
 def check_bound(obj_rct, scr_rct):
     """
@@ -26,30 +49,22 @@ def check_bound(obj_rct, scr_rct):
 
 def main():
     # 練習1
-    pg.display.set_caption("逃げろ！こうかとん")
-    scrn_sfc = pg.display.set_mode((1600, 900))
-    scrn_rct = scrn_sfc.get_rect()
-    bg_sfc = pg.image.load("fig/pg_bg.jpg")
-    bg_rct = bg_sfc.get_rect()
-
+    scr = Screen('逃げろこうかとん!', (1600,900), 'mt/pg_bg.jpeg')
     # 練習3
-    tori_sfc = pg.image.load("fig/6.png")
-    tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 2.0)
-    tori_rct = tori_sfc.get_rect()
-    tori_rct.center = 900, 400
+    tori = Bird("mt/fig/6.png", 2, (900, 600))
 
     # 練習5
     bomb_sfc = pg.Surface((20, 20)) # 空のSurface
     bomb_sfc.set_colorkey((0, 0, 0)) # 四隅の黒い部分を透過させる
     pg.draw.circle(bomb_sfc, (255, 0, 0), (10, 10), 10) # 爆弾用の円を描く
     bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.centerx = randint(0, scrn_rct.width)
-    bomb_rct.centery = randint(0, scrn_rct.height)
+    bomb_rct.centerx = randint(0, scr.rct.width)
+    bomb_rct.centery = randint(0, scr.rct.height)
     vx, vy = +1, +1 # 練習6
 
     clock = pg.time.Clock() # 練習1
     while True:
-        scrn_sfc.blit(bg_sfc, bg_rct) # 練習2
+        scr.blit(scr.bg_sfc, scr.bg_rct) # 練習2
         
         for event in pg.event.get(): # 練習2
             if event.type == pg.QUIT:
@@ -58,23 +73,23 @@ def main():
         key_states = pg.key.get_pressed()
         for key, delta in key_delta.items():
             if key_states[key]:
-                tori_rct.centerx += delta[0]
-                tori_rct.centery += delta[1]
+                tori.rct.centerx += delta[0]
+                tori.rct.centery += delta[1]
                 # 練習7
-                if check_bound(tori_rct, scrn_rct) != (+1, +1):
-                    tori_rct.centerx -= delta[0]
-                    tori_rct.centery -= delta[1]
-        scrn_sfc.blit(tori_sfc, tori_rct) # 練習3
+                if check_bound(tori.rct, scr.rct) != (+1, +1):
+                    tori.rct.centerx -= delta[0]
+                    tori.rct.centery -= delta[1]
+        scr.blit(tori.sfc, tori.rct) # 練習3
 
         # 練習7
-        yoko, tate = check_bound(bomb_rct, scrn_rct)
+        yoko, tate = check_bound(bomb_rct, scr.rct)
         vx *= yoko
         vy *= tate
         bomb_rct.move_ip(vx, vy) # 練習6
-        scrn_sfc.blit(bomb_sfc, bomb_rct) # 練習5
+        scr.blit(bomb_sfc, bomb_rct) # 練習5
 
         # 練習8
-        if tori_rct.colliderect(bomb_rct): # こうかとんrctが爆弾rctと重なったら
+        if tori.rct.colliderect(bomb_rct): # こうかとんrctが爆弾rctと重なったら
             return
 
         pg.display.update() #練習2
