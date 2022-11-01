@@ -33,6 +33,41 @@ class Bird:
         self.rct = self.sfc.get_rect()
         self.rct.center = xy
 
+    def blit(self, scr):
+        scr.blit(self.sfc, self.rct)
+
+    def update(self, scr):
+        key_states = pg.key.get_pressed()
+        for key, delta in key_delta.items():
+            if key_states[key]:
+                self.rct.centerx += delta[0]
+                self.rct.centery += delta[1]
+                # 練習7
+                if check_bound(self.rct, scr.rct) != (+1, +1):
+                    self.rct.centerx -= delta[0]
+                    self.rct.centery -= delta[1]
+        self.blit(scr)  # 練習3
+
+class Bomb:
+    def __init__(self, color, r, speed_t, scr):
+        self.sfc = pg.Surface((r*2, r*2))  # 空のSurface
+        self.sfc.set_colorkey((0, 0, 0))  # 四隅の黒い部分を透過させる
+        pg.draw.circle(self.sfc, color, (r,r), r)  # 爆弾用の円を描く
+        self.rct = self.sfc.get_rect()
+        self.rct.centerx = randint(0, scr.rct.width)
+        self.rct.centery = randint(0, scr.rct.height)
+        self.vx, self.vy = speed_t
+
+    def blit(self, scr):
+        scr.blit(self.sfc, self.rct)
+
+    def update(self, scr):
+        yoko, tate = check_bound(self.rct, scr.rct)
+        self.vx *= yoko
+        self.vy *= tate
+        self.rct.move_ip(self.vx, self.vy)  # 練習6
+        scr.blit(self.sfc, self.rct)  # 練習5
+
 def check_bound(obj_rct, scr_rct):
     """
     obj_rct：こうかとんrct，または，爆弾rct
@@ -54,13 +89,7 @@ def main():
     tori = Bird("mt/fig/6.png", 2, (900, 600))
 
     # 練習5
-    bomb_sfc = pg.Surface((20, 20)) # 空のSurface
-    bomb_sfc.set_colorkey((0, 0, 0)) # 四隅の黒い部分を透過させる
-    pg.draw.circle(bomb_sfc, (255, 0, 0), (10, 10), 10) # 爆弾用の円を描く
-    bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.centerx = randint(0, scr.rct.width)
-    bomb_rct.centery = randint(0, scr.rct.height)
-    vx, vy = +1, +1 # 練習6
+    bomb = Bomb((255, 0, 0), 10, (1,1), scr)
 
     clock = pg.time.Clock() # 練習1
     while True:
@@ -70,26 +99,13 @@ def main():
             if event.type == pg.QUIT:
                 return
 
-        key_states = pg.key.get_pressed()
-        for key, delta in key_delta.items():
-            if key_states[key]:
-                tori.rct.centerx += delta[0]
-                tori.rct.centery += delta[1]
-                # 練習7
-                if check_bound(tori.rct, scr.rct) != (+1, +1):
-                    tori.rct.centerx -= delta[0]
-                    tori.rct.centery -= delta[1]
-        scr.blit(tori.sfc, tori.rct) # 練習3
+        tori.update(scr)
 
         # 練習7
-        yoko, tate = check_bound(bomb_rct, scr.rct)
-        vx *= yoko
-        vy *= tate
-        bomb_rct.move_ip(vx, vy) # 練習6
-        scr.blit(bomb_sfc, bomb_rct) # 練習5
+        bomb.update(scr)
 
         # 練習8
-        if tori.rct.colliderect(bomb_rct): # こうかとんrctが爆弾rctと重なったら
+        if tori.rct.colliderect(bomb.rct): # こうかとんrctが爆弾rctと重なったら
             return
 
         pg.display.update() #練習2
