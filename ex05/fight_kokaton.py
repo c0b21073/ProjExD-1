@@ -1,7 +1,6 @@
 import pygame as pg
 import sys
 from random import randint
-from random import choice
 
 def make_img(path, x, y, r=0, m=1.0):
     sfc = pg.image.load(path)
