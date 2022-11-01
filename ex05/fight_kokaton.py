@@ -36,12 +36,6 @@ class Bird:
         pg.K_LEFT: [-3, 0],
         pg.K_RIGHT: [+3, 0],
     }
-    roket_data = {
-        pg.K_UP: [0, -4],
-        pg.K_DOWN: [0, +4],
-        pg.K_LEFT: [-4, 0],
-        pg.K_RIGHT: [+4, 0],
-    }
 
     def __init__(self, file_name, x, xy):  # "mt/fig/6.png"
         self.sfc = pg.image.load(file_name)
