@@ -215,8 +215,7 @@ def main():
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
+                return
         pg.display.update()
         clock.tick(1000)
 
