@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from random import randint, choice
 
+# すごいね！
 
 class Screen:
     def __init__(self, title, wh):
