@@ -51,8 +51,6 @@ class Bird:
         if key_states[pg.K_SPACE]:
             self.jump()
 
-        print(self.v0)
-
         if self.isJumping:
             # t = (pg.time.get_ticks() - self.jumpTime) / 500
             # g = 9.8
@@ -69,7 +67,7 @@ class Bird:
         if not self.isJumping:
             self.isJumping = True
             self.v0 = -27
-        #self.jumpTime = pg.time.get_ticks()
+        # self.jumpTime = pg.time.get_ticks()
 
 
 class Textbook:
@@ -99,14 +97,41 @@ class Books:
             self.books.append(Textbook(choice(textbook_name), (1900, 500)))
             self.previous_time = now_time
 
-    def update(self, scr):
+    def update(self, scr, tori, clock):
         book_remove_flag = False
         for book in self.books:
             book.update(scr)
+            if tori.rct.colliderect(book.rct):
+                game_over(scr.sfc, clock)
+                self.books = []
             if book.rct.right < 0:
                 book_remove_flag = True
         if book_remove_flag:
             self.books.pop(0)
+
+
+def game_over(sfc, clock):
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.KEYDOWN and event.key == pg.K_r:
+                return
+        # ゲームオーバーの文字表示
+        afonto = pg.font.Font(None, 80)
+        atxt = afonto.render("GAME OVER", True, (0, 0, 0))
+        arct = atxt.get_rect()
+        arct.center = 800, 450
+        sfc.blit(atxt, arct)
+        bfonto = pg.font.Font(None, 50)
+        btxt = bfonto.render("press 'R' to restart", True, (0, 0, 0))
+        brct = btxt.get_rect()
+        brct.center = 800, 550
+        sfc.blit(btxt, brct)
+
+        pg.display.update()
+        clock.tick(1000)
 
 
 def main():
@@ -120,7 +145,7 @@ def main():
         tori.update(scr)
         if randint(0, 100) == 98:
             books.make_book()
-        books.update(scr)
+        books.update(scr, tori, clock)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
