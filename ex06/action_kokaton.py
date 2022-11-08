@@ -166,10 +166,29 @@ class Books:
             self.books.pop(0)
             num_of_books += 1
 
+class Txt:
+    """
+    テキスト表示用クラス
+    """
+    def __init__(self,font,color,xy,text):
+        """
+        font：フォント\n
+        color：文字の色\n
+        xy：文字の中心座標\n
+        text：テキストの内容
+        """
+        self.text = font.render(text, True, color)
+        self.rct = self.text.get_rect()
+        self.rct.center = xy
+
+    def blit(self,scr:Screen):
+        scr.blit(self.text, self.rct)
 
 # ゲームオーバー処理
 def game_over(sfc, clock):
     # ゲームオーバー画面への遷移
+    atxt = Txt(pg.font.Font(None, 80), (0, 0, 0), (800, 450), "GAME OVER" )
+    btxt = Txt(pg.font.Font(None, 50), (0, 0, 0), (800, 550), "press 'R' to restart")
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -179,16 +198,8 @@ def game_over(sfc, clock):
             if event.type == pg.KEYDOWN and event.key == pg.K_r:
                 return
         # ゲームオーバーの文字表示
-        afonto = pg.font.Font(None, 80)
-        atxt = afonto.render("GAME OVER", True, (0, 0, 0))
-        arct = atxt.get_rect()
-        arct.center = 800, 450
-        sfc.blit(atxt, arct)
-        bfonto = pg.font.Font(None, 50)
-        btxt = bfonto.render("press 'R' to restart", True, (0, 0, 0))
-        brct = btxt.get_rect()
-        brct.center = 800, 550
-        sfc.blit(btxt, brct)
+        atxt.blit(sfc)
+        btxt.blit(sfc)
 
         pg.display.update()
         clock.tick(1000)
