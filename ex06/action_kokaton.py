@@ -156,6 +156,7 @@ class Books:
                 hearts.damage(scr)
                 if len(hearts) <= 0:
                     game_over(scr.sfc, clock)  # ゲームオーバー関数，以下初期化
+                    start_scr(scr)
                     self.books = []
                     score.start_time = pg.time.get_ticks()
                     num_of_books = 0
@@ -167,7 +168,7 @@ class Books:
             self.books.pop(0)
             num_of_books += 1
 
-class Txt:
+class Txt: #金子(C0B21047)作
     """
     テキスト表示用クラス
     """
@@ -184,6 +185,27 @@ class Txt:
 
     def blit(self,scr:Screen):
         scr.blit(self.text, self.rct)
+
+
+def start_scr(scr): #金子作
+    """
+    最初の画面
+    """
+    start_txt = Txt(pg.font.Font(None,120), "BLACK", (800, 450), "Push any key to start")
+    clock = pg.time.Clock()
+    while True:
+        for event in pg.event.get():
+            if event.type== pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.KEYDOWN:
+                return
+                
+        scr.bg_update()
+        start_txt.blit(scr)
+        pg.display.update()
+        clock.tick(1000)
+
 
 # ゲームオーバー処理
 def game_over(sfc, clock):
@@ -210,9 +232,11 @@ def main():
     scr = Screen('アクションこうかとん', (1600, 900))
     tori = Bird("mt/fig/3_reverse.png", 2.5, (180, 500))
     books = Books()
-    clock = pg.time.Clock()
     score = Score()
     hearts = Hearts()
+    
+    start_scr(scr)
+    clock = pg.time.Clock()
 
     # メインループ
     while True:
