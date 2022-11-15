@@ -168,17 +168,9 @@ class Books:
             self.books.pop(0)
             num_of_books += 1
 
+
 class Txt: #金子(C0B21047)作
-    """
-    テキスト表示用クラス
-    """
     def __init__(self,font,color,xy,text):
-        """
-        font：フォント\n
-        color：文字の色\n
-        xy：文字の中心座標\n
-        text：テキストの内容
-        """
         self.text = font.render(text, True, color)
         self.rct = self.text.get_rect()
         self.rct.center = xy
@@ -188,9 +180,6 @@ class Txt: #金子(C0B21047)作
 
 
 def start_scr(scr): #金子作
-    """
-    最初の画面
-    """
     start_title = Txt(pg.font.Font(None,160), "RED", (800, 300), "Action Kokaton")
     start_txt = Txt(pg.font.Font(None,100), "BLACK", (800, 500), "Push any key to start")
     clock = pg.time.Clock()
