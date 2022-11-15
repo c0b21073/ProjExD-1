@@ -43,8 +43,8 @@ class Score:
 
     def update(self, scr):  # スコアは経過時間と飛び越えた本の数で決定される
         time = pg.time.get_ticks() - self.start_time
-        score = int(time // 100)
-        txt = self.font.render(f'score : {score + (num_of_books * 10)}', True, (0, 0, 0))
+        self.score = int(time // 100) + (num_of_books * 10)
+        txt = self.font.render(f'score : {self.score}', True, (0, 0, 0))
         scr.blit(txt, (0, 0))
 
 
@@ -154,7 +154,7 @@ class Books:
             if tori.rct.colliderect(book.rct):
                 hearts.damage(scr)
                 if len(hearts) <= 0:
-                    game_over(scr.sfc, clock)  # ゲームオーバー関数，以下初期化
+                    game_over(scr.sfc, clock,score)  # ゲームオーバー関数，以下初期化
                     start_scr(scr)
                     self.books = []
                     score.start_time = pg.time.get_ticks()
@@ -190,7 +190,8 @@ def start_scr(scr): #金子作
     """
     最初の画面
     """
-    start_txt = Txt(pg.font.Font(None,120), "BLACK", (800, 450), "Push any key to start")
+    start_title = Txt(pg.font.Font(None,160), "RED", (800, 300), "Action Kokaton")
+    start_txt = Txt(pg.font.Font(None,100), "BLACK", (800, 500), "Push any key to start")
     clock = pg.time.Clock()
     while True:
         for event in pg.event.get():
@@ -202,15 +203,17 @@ def start_scr(scr): #金子作
                 
         scr.bg_update()
         start_txt.blit(scr)
+        start_title.blit(scr)
         pg.display.update()
         clock.tick(1000)
 
 
 # ゲームオーバー処理
-def game_over(sfc, clock):
+def game_over(sfc, clock,score):
     # ゲームオーバー画面への遷移
-    atxt = Txt(pg.font.Font(None, 80), (0, 0, 0), (800, 450), "GAME OVER" )
-    btxt = Txt(pg.font.Font(None, 50), (0, 0, 0), (800, 550), "press 'R' to restart")
+    atxt = Txt(pg.font.Font(None, 160), (0, 0, 0), (800, 300), "GAME OVER" )
+    btxt = Txt(pg.font.Font(None, 50), (0, 0, 0), (800, 650), "press 'R' to restart")
+    score_txt = Txt(pg.font.Font(None, 80), (0, 0, 0), (800, 500), f"score:{score.score}")
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -222,6 +225,7 @@ def game_over(sfc, clock):
         # ゲームオーバーの文字表示
         atxt.blit(sfc)
         btxt.blit(sfc)
+        score_txt.blit(sfc)
 
         pg.display.update()
         clock.tick(1000)
